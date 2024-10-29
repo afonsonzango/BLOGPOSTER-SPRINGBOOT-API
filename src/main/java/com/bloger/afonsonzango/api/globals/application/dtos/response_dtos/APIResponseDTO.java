@@ -18,15 +18,12 @@ public class APIResponseDTO<T> {
         this.message = message;
         this.data = data;
     }
+
+    public static <T> APIResponseDTO<T> success(HttpStatus status, String message, T data) {
+        return new APIResponseDTO<>(false, status, message, data);
+    }
+
+    public static <T> APIResponseDTO<T> error(HttpStatus status, String message, T data) {
+        return new APIResponseDTO<>(true, status, message, data);
+    }
 }
-
-
-
-
-
-
-
-
-
-
-

@@ -7,11 +7,13 @@ import com.bloger.afonsonzango.api.features.user.domain.entities.User;
 import com.bloger.afonsonzango.api.features.user.infrastructures.repositories.user_repository;
 import com.bloger.afonsonzango.api.globals.exeptions.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CreateUserService {
     private final user_repository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Autowired
     public CreateUserService(user_repository userRepository) {
@@ -28,14 +30,14 @@ public class CreateUserService {
 
             user.setName(userRegister.getName());
             user.setEmail(userRegister.getEmail());
-            user.setPassword(userRegister.getPassword());
+            user.setPassword(passwordEncoder.encode(userRegister.getPassword()));
 
             userRepository.save(user);
 
             return UserResponseMapper.user_response_mapper(user);
         } catch (ValidationException ex) {
             throw ex;
-        } catch (Exception ex) {
+        } catch (RuntimeException ex) {
             throw new RuntimeException("Erro ao registrar usuario!", ex);
         }
     }

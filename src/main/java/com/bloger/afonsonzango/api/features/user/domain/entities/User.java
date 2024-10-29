@@ -9,8 +9,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -40,9 +38,6 @@ public class User {
     @Column(nullable = true)
     private String password;
 
-    @Autowired
-    private transient PasswordEncoder passwordEncoder;
-
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Post> posts = new ArrayList<>();
 
@@ -52,12 +47,6 @@ public class User {
     @PrePersist
     protected void generateUUID () {
         this.uuid = UUID.randomUUID();
-    }
-    @PreUpdate
-    public void hashPassword () {
-        if (password != null && !password.startsWith("$2a$")) {
-            this.password = passwordEncoder.encode(password);
-        }
     }
 
     @CreationTimestamp
